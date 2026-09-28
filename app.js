@@ -101,35 +101,41 @@ app.delete("/api/products/:id", (req, res) => {
   const product = getProductById(id);
   if (!product) return res.status(404).json({ error: "ไม่พบผลิตภัณฑ์" });
 
-// delete image file
-if (product.image_path) {
+  // delete image file
+  if (product.image_path) {
     const filePath = path.join(__dirname, "public", product.image_path);
     if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        console.log(`🗑️ ลบไฟล์: ${product.image_path}`);
+      fs.unlinkSync(filePath);
+      console.log(`🗑️ ลบไฟล์: ${product.image_path}`);
     }
-}
+  }
 
   deleteProduct(id);
   res.json({ message: "ลบสำเร็จ", deleted: product });
 });
 
 app.put("/api/products/:id", (req, res) => {
-    const id = parseInt(req.params.id);
-    const { name, producer, price, category, contact } = req.body;
+  const id = parseInt(req.params.id);
+  const { name, producer, price, category, contact } = req.body;
 
-    if (!name || !producer || !price || !category) {
-        return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
-    }
+  if (!name || !producer || !price || !category) {
+    return res.status(400).json({ error: "ข้อมูลไม่ครบ" });
+  }
 
-    const updated = updateProduct(id, {
-        name, producer, price: Number(price), category, contact
-    });
+  const updated = updateProduct(id, {
+    name, producer, price: Number(price), category, contact
+  });
 
-    if (!updated) return res.status(404).json({ error: "ไม่พบผลิตภัณฑ์" });
-    res.json(updated);
+  if (!updated) return res.status(404).json({ error: "ไม่พบผลิตภัณฑ์" });
+  res.json(updated);
 });
 
-app.listen(3000, () => {
-  console.log("🚀 http://localhost:3000");
+// app.listen(3000, () => {
+//     console.log('🚀 http://localhost:3000');
+// });
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });
